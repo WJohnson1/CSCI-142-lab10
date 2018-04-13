@@ -17,6 +17,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.application.Application;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -48,10 +50,10 @@ public class BacktrackingViewer extends Application {
     private final String CURRENT_CONFIG_LABEL = "  Displaying config: %9d ";
 
     /** Label String for displaying if the current Configuration is valid */
-    private final String IS_VALID_LABEL = "  isValid(): %5s ";
+    private final String IS_VALID_LABEL = "  isValid(): %9s ";
 
     /** Label String for displaying if the current Configuration is the goal Configuration. */
-    private final String IS_GOAL_LABEL = "  isGoal(): %5s ";
+    private final String IS_GOAL_LABEL = "  isGoal(): %9s ";
 
     /** Font used in the BacktrackingViewer */
     private final Font font = Font.font("monospaced", 14);
@@ -112,6 +114,9 @@ public class BacktrackingViewer extends Application {
             }
         });
 
+        // Build the controls box
+        HBox controlsBox = buildControls(configSlider);
+
         // Build the information pane
         TilePane pane = new TilePane();
         pane.setOrientation(Orientation.VERTICAL);
@@ -127,7 +132,7 @@ public class BacktrackingViewer extends Application {
 
         // Combine everything together
         mainPane.setCenter(configDisplay);
-        mainPane.setBottom(configSlider);
+        mainPane.setBottom(controlsBox);
         mainPane.setRight(infoPane);
 
         // Show the GUI
@@ -152,6 +157,20 @@ public class BacktrackingViewer extends Application {
         return configDisplay;
     }
 
+    /**
+     * Build the HBox containing the slider and control buttons
+     */
+    private HBox buildControls(Slider configSlider) {
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
+        HBox.setHgrow(configSlider, Priority.ALWAYS);
+        Button leftButton = new Button("<");
+        leftButton.setOnAction((event) -> configSlider.decrement());
+        Button rightButton = new Button(">");
+        rightButton.setOnAction((event) -> configSlider.increment());
+        hBox.getChildren().addAll(leftButton, configSlider, rightButton);
+        return hBox;
+    }
     /**
      * Build the slider used to scroll through the Configurations.
      */
