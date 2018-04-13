@@ -1,0 +1,115 @@
+$java Graph ./data/graph1.txt
+Graph is acyclic.
+Ranks are set.
+A, cost: 2 2 3 rank: 1 , out:  B, in:  D
+B, cost: 2 3 1 rank: 2 , out:  in:  A, D, C
+C, cost: 3 3 3 rank: 1 , out:  B, in:  D
+D, cost: 4 1 1 rank: 0 , out:  A, B, C, in:
+
+$java ScheduleMain ./data/graph1.txt 6 2 false
+Graph is acyclic.
+Job assignment order: D A C B
+Elapsed time: 0.111 seconds.
+Goal Configuration:
+Machine 0: (A, 3) (B, 6)
+Machine 1: (D, 1) (C, 4)
+
+-----------------------------------------------
+$java Graph ./data/graph2.txt
+Graph is acyclic.
+Ranks are set.
+A, cost: 2 2 3 rank: 1 , out:  B, E, in:  D
+B, cost: 2 3 1 rank: 2 , out:  in:  A, D, C
+C, cost: 5 3 3 rank: 1 , out:  B, in:  D
+D, cost: 4 1 1 rank: 0 , out:  A, B, C, in:
+E, cost: 5 3 1 rank: 2 , out:  in:  A
+
+$java ScheduleMain ./data/graph2.txt 7 2 false
+Graph is acyclic.
+Job assignment order: D A C B E
+Elapsed time: 0.132 seconds.
+Goal Configuration:
+Machine 0: (A, 3) (B, 6)
+Machine 1: (D, 1) (C, 4) (E, 7)
+
+--------------------------------------------
+$java Graph ./data/graph3.txt
+Graph is acyclic.
+Ranks are set.
+A, cost: 2 2 3 rank: 0 , out:  B, D, in:
+B, cost: 2 3 1 rank: 2 , out:  D, E, in:  A, C
+C, cost: 3 3 3 rank: 1 , out:  B, in:  F
+D, cost: 4 1 1 rank: 4 , out:  in:  A, B, E
+E, cost: 2 2 2 rank: 3 , out:  D, in:  B
+F, cost: 1 2 3 rank: 0 , out:  C, in:
+
+$java ScheduleMain ./data/graph3.txt 9 2 false
+Graph is acyclic.
+Job assignment order: A F C B E D 
+Elapsed time: 0.107 seconds.
+Goal Configuration: 
+Machine 0: (F, 1) (C, 4) (B, 6) (E, 8)
+Machine 1: (A, 2) (D, 9)
+
+--------------------------------------------
+$java Graph ./data/graph4.txt
+Graph is acyclic.
+Ranks are set.
+A, cost: 5 1 4 rank: 4 , out:  T, P, Q, in:  F, I, K
+B, cost: 4 5 2 rank: 0 , out:  in:
+C, cost: 3 4 3 rank: 3 , out:  S, M, D, U, in:  Y, Z
+D, cost: 4 1 1 rank: 4 , out:  in:  C, F, K
+E, cost: 3 5 1 rank: 0 , out:  Q, in:
+F, cost: 3 3 2 rank: 0 , out:  A, D, in:
+G, cost: 2 2 3 rank: 4 , out:  in:  H, I, J, O
+H, cost: 2 4 5 rank: 1 , out:  S, G, in:  J
+I, cost: 5 5 3 rank: 3 , out:  G, A, in:  L, Z
+J, cost: 5 4 3 rank: 0 , out:  H, G, in:
+K, cost: 1 5 1 rank: 0 , out:  D, A, in:
+L, cost: 1 4 5 rank: 2 , out:  I, in:  X
+M, cost: 2 2 2 rank: 4 , out:  in:  C
+N, cost: 5 1 5 rank: 0 , out:  Z, in:
+O, cost: 1 5 1 rank: 0 , out:  G, U, T, in:
+P, cost: 2 3 2 rank: 5 , out:  Q, in:  A
+Q, cost: 4 5 4 rank: 6 , out:  in:  A, E, P, T
+R, cost: 1 3 3 rank: 2 , out:  in:  X, Y
+S, cost: 4 2 3 rank: 4 , out:  in:  C, H, X
+T, cost: 5 3 5 rank: 5 , out:  Q, in:  A, O
+U, cost: 5 3 5 rank: 4 , out:  in:  C, O, Z
+V, cost: 2 2 1 rank: 0 , out:  in:
+W, cost: 4 2 2 rank: 1 , out:  Z, in:  Y
+X, cost: 3 2 5 rank: 1 , out:  S, L, R, in:  Y
+Y, cost: 5 2 3 rank: 0 , out:  X, R, W, C, in:
+Z, cost: 1 1 4 rank: 2 , out:  I, C, U, in:  N, W
+
+$java ScheduleMain ./data/graph4.txt 31 2 false
+Graph is acyclic.
+Job assignment order: B E F J K N O V Y H W X L R Z C I A D G M S U P T Q
+Elapsed time: 1.764 seconds.
+No solution!
+
+$java ScheduleMain ./data/graph4.txt 32 2 false
+Graph is acyclic.
+Job assignment order: B E F J K N O V Y H W X L R Z C I A D G M S U P T Q
+Elapsed time: 0.634 seconds.
+Goal Configuration:
+Machine 0: (B, 4) (E, 7) (F, 10) (K, 11) (O, 12) (H, 14) (L, 15) (R, 16) (C, 19) (M, 21) (P, 23) (T, 28) (Q, 32)
+Machine 1: (J, 4) (N, 5) (V, 7) (Y, 9) (W, 11) (X, 13) (Z, 14) (I, 20) (A, 21) (D, 22) (G, 24) (S, 26) (U, 29)
+
+$ java ScheduleMain ./data/graph4.txt 21 3 false  --> OutOfMemoryError may be thrown if debug is enabled.
+Graph is acyclic.
+Job assignment order: B E F J K N O V Y H W X L R Z C I A D G M S U P T Q
+Elapsed time: 54.208 seconds.
+Goal Configuration:
+Machine 0: (B, 4) (K, 5) (O, 6) (H, 8) (L, 9) (R, 10) (G, 14) (M, 16) (U, 21)
+Machine 1: (N, 1) (Y, 3) (W, 5) (X, 7) (Z, 8) (C, 12) (A, 13) (D, 14) (T, 17)
+Machine 2: (E, 1) (F, 3) (J, 6) (V, 7) (I, 12) (S, 15) (P, 17) (Q, 21)
+
+------------------------------------------
+$java Graph ./data/graph5.txt
+Graph is cyclic. No solution!
+
+------------------------------------------
+
+$java ScheduleMain ./data/graph6.txt 20 3 false
+Graph is cyclic. No solution!
