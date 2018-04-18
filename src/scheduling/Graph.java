@@ -95,10 +95,28 @@ public class Graph {
      * @return true iff the resulted graph is emoty
      */
     public boolean isAcyclic(){
-        return false;
+        boolean a = true;
+        for (Job j: getJobs().values()){
+            if (j.getInNeighbors().size()==1) {
+                Set<Job> visited = visitDFS(j, Collections.emptySet());
+                if (!visited.equals(Collections.emptySet())) {
+                    a = false;
+                }
+            }
+        }
+        return a;
     }
 
+    private Set<Job> visitDFS(Job node, Set<Job> visited){
+        for (Job neighbor : node.getOutNeighbors()){
+            if (!visited.contains(neighbor)){
+                visited.add(neighbor);
+                visitDFS(neighbor,visited);
+            }
 
+        }
+        return visited;
+    }
     /**
      * Set the rank of each nodes in this graph using BFS.
      * The rank of a node is defined as the maximum path length from any staring node to the node.
