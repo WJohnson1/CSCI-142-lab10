@@ -1,41 +1,78 @@
 package scheduling;
 
 import backtracker.Configuration;
-import java.lang.Object;
 import java.util.*;
 
+/**
+ * This class for the job scheduling configuration. This will place the appropriate
+ * jobs into the number of machine so that the jobs will not exceed the time limit
+ * @authors William Johnson
+ * @emails wcj7833
+ */
 public class JobSchedulingConfig implements Configuration{
     List<Machine> machines = new ArrayList<>();
-    private List<Job> jobs;
-    public JobSchedulingConfig(List<Job> jobs, int time_limit, int num_machines) {
-        for (int i = 0; i<num_machines;i++){
+    private Map<String,Job> jobs;
+    private Job current;
+    private TreeSet<Job> sortedjobs;
+    private int time_limit;
+    private int num_machines;
+
+    /**
+     * The constructor for the Job Scheduling configuration
+     * @param jobs The jobs that will be scheduled
+     * @param time_limit the time limit for the scheduling configuration
+     * @param num_machines the number of machines
+     */
+    public JobSchedulingConfig(Map<String,Job> jobs, int time_limit, int num_machines) {
+        this.jobs = jobs;
+        this.time_limit = time_limit;
+        this.num_machines = num_machines;
+        for (int i = 0; i<this.num_machines;i++){
             Machine machine = new Machine(i,time_limit);
             machines.add(machine);
         }
-        Job temp;
-        for (int i = 1; i < jobs.size(); i++) {
-            for(int j = i ; j > 0 ; j--){
-                if(jobs.get(j).getRank() < jobs.get(j-1).getRank()){
-                    temp = jobs.get(j);
-                    jobs.set(j,jobs.get(j-1));
-                    jobs.set(j-1,temp);
-                }
-            }
-        }
-        this.jobs = jobs;
+        this.sortedjobs = new TreeSet<>((j1,j2) -> {
+           int diff = j1.getRank() - j2.getRank();
+           if (diff!=0){
+               return diff;
+           }
+           else {
+               return j1.getName().compareTo(j2.getName());
+           }
+        });
+        this.current =null;
+
 
     }
 
+    /**
+     * Creates a duplicate JobSchedulingConfig based on the duplicated version
+     * @param duplicate the JobSchedulingConfig that will be duplicated
+     */
+    private JobSchedulingConfig(JobSchedulingConfig duplicate){
+        this.current = duplicate.current;
+        this.time_limit = duplicate.time_limit;
+        this.sortedjobs = new TreeSet<>(duplicate.sortedjobs);
+        this.jobs = new HashMap<>(duplicate.jobs);
+        this.machines = new ArrayList<>(duplicate.machines);
+    }
+
+    /**
+     * Displays the Job Order for how th emachine will be assessed
+     */
     public void displayJobsAssignmentOrder() {
 
+        Job[] joblist = new Job[jobs.values().size()];
+        joblist =jobs.values().toArray(joblist);
+        ArrayList<Job> j = new ArrayList<>(Arrays.asList(joblist));
         int smallest = 0;
-        while (jobs.size()>0){
+        while (j.size()>0){
             int count = 0;
-            while (count<jobs.size()){
-                if (jobs.get(count)!= null) {
-                    if (jobs.get(count).getRank() == smallest) {
-                        System.out.print(jobs.get(count).getName() + " ");
-                        jobs.remove(count);
+            while (count<j.size()){
+                if (j.get(count)!= null) {
+                    if (j.get(count).getRank() == smallest) {
+                        System.out.print(j.get(count).getName() + " ");
+                        j.remove(count);
                     } else {
                         count++;
                     }
@@ -48,7 +85,6 @@ public class JobSchedulingConfig implements Configuration{
         }
         System.out.println();
     }
-
     /**
      * Get the collection of successors from the current one.
      *
@@ -56,17 +92,14 @@ public class JobSchedulingConfig implements Configuration{
      */
     @Override
     public Collection<Configuration> getSuccessors() {
-        int count;
-        for (Machine machine: machines){
-            count=0;
-            while (machine.stillActive(jobs.get(count))){
-                machine.addJob(jobs.get(count));
-                count++;
-            }
-
+        Collection<Configuration> configurations = new ArrayList<>();
+        this.current = this.sortedjobs.first();
+        this.sortedjobs.remove(this.current);
+        for (int i = 0; i<this.num_machines;i++){
+            JobSchedulingConfig a = new JobSchedulingConfig(this);
+            a.machines.get(i).addJob(this.current,jobs);
+            configurations.add(a);
         }
-
-        Collection<Configuration> configurations = new LinkedHashSet<>();
         return configurations;
     }
 

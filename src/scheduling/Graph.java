@@ -6,6 +6,7 @@ import java.util.*;
 
 /**
  * Class representing the dependency of jobs
+ * @author William Johnson
  */
 public class Graph {
     /**
@@ -82,9 +83,8 @@ public class Graph {
     /**
      * @return the graph of jobs
      */
-    public ArrayList<Job> getJobs(){
-        ArrayList<Job> j = new ArrayList<>(this.jobs.values());
-        return j;
+    public Map<String, Job> getJobs(){
+        return this.jobs;
     }
 
 
@@ -97,11 +97,11 @@ public class Graph {
     public boolean isAcyclic(){
 
         boolean something = false;
-        for (Job j: getJobs()){
+        for (Job j: getJobs().values()){
             if (j.isStartNode()) {
                 something = true;
             }
-            for (Job destination: getJobs()){
+            for (Job destination: getJobs().values()){
                 int first = 0;
                 List<Job> path = this.buildPathDFS(j,destination);
                 if (path != null) {
@@ -127,17 +127,6 @@ public class Graph {
 
     }
 
-    private boolean visitDFS( Job job, Set< Job > visited ) {
-
-        for (Job newjob: job.getOutNeighbors()){
-            if ( !visited.contains( newjob ) ) {
-                visited.add( newjob );
-                visitDFS( newjob, visited );
-            }
-            else return false;
-        }
-        return true;
-    }
     /**
      * Create a path from a starting node to a finishing node if such
      * a path exists.
@@ -166,12 +155,11 @@ public class Graph {
      * The rank of a node is defined as the maximum path length from any staring node to the node.
      */
     public void setRankBFS() {
-        for (Job startnode: getJobs()){
+        for (Job startnode: getJobs().values()){
             if (startnode.isStartNode()) {
-                for (Job j : getJobs()) {
+                for (Job j : getJobs().values()) {
                     List<Job> path = buildPathDFS(startnode,j);
                     if (path != null) {
-                        //System.out.println(j.getName() + "|"  +path);
                         if (path.size() > j.getRank()) {
                             j.setRank(path.size() - 1);
                         }
@@ -197,7 +185,6 @@ public class Graph {
 
         if ( start.equals( finish ) )  {
             path = new LinkedList<>();
-            // Put finish node in path. (Should be 1st node added.)
             path.add( start );
             return path;
         }
@@ -207,7 +194,6 @@ public class Graph {
                 visited.add( nbr );
                 path = buildPathDFS( nbr, finish, visited );
                 if ( path != null ) {
-                    // Prepend this node to the successful path.
                     path.add( 0, start );
                     return path;
                 }
